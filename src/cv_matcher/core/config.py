@@ -7,5 +7,14 @@ class Settings(BaseSettings):
     app_name: str = "CV-Matcher"
     environment: str = "development"
 
+    database_url: str = "postgresql+asyncpg://cv_matcher:devpassword@localhost:5432/cv_matcher"
+    test_database_url: str = (
+        "postgresql+asyncpg://cv_matcher:devpassword@localhost:5432/cv_matcher_test"
+    )
+
+    jwt_secret_key: str
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+
 
 settings = Settings()
