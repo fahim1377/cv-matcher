@@ -1,10 +1,15 @@
 # CV-Matcher
 
-FastAPI-Service, der einen Lebenslauf mit einer Stellenanzeige per Embedding vergleicht, einen Match-Score berechnet und fehlende Skills aufzeigt.
+FastAPI-Service, der einen Lebenslauf mit einer Stellenanzeige per Embedding vergleicht und einen Match-Score berechnet.
 
 ## Setup
 
-Voraussetzung: eine laufende PostgreSQL-Instanz mit einer `cv_matcher`- und einer `cv_matcher_test`-Datenbank (siehe `.env.example` für die erwartete Verbindungs-URL).
+Voraussetzung: eine laufende PostgreSQL-Instanz mit einer `cv_matcher`- und einer `cv_matcher_test`-Datenbank (siehe `.env.example` für die erwartete Verbindungs-URL) sowie der [pgvector](https://github.com/pgvector/pgvector)-Extension:
+
+```bash
+# einmalig, als Postgres-Superuser (nicht die App-Rolle)
+CREATE EXTENSION IF NOT EXISTS vector;   -- in cv_matcher UND cv_matcher_test ausfuehren
+```
 
 ```bash
 uv sync
@@ -14,6 +19,8 @@ uv run uvicorn cv_matcher.main:app --reload
 ```
 
 API-Dokumentation danach unter `http://localhost:8000/docs`.
+
+Hinweis: Beim ersten Start bzw. ersten `POST /cv`- oder `/jobs`-Aufruf wird das Embedding-Modell (`paraphrase-multilingual-MiniLM-L12-v2`, ~470 MB) einmalig heruntergeladen.
 
 ## Tests
 
@@ -39,6 +46,7 @@ uv run alembic upgrade head
 
 - [x] Fundament: Projektstruktur, Tooling (`uv`, `ruff`, `mypy`), Health-Check-Endpoint
 - [x] Auth (JWT), Dependency Injection, PostgreSQL + SQLAlchemy (async) + Alembic, vollständige Test-Coverage
-- [ ] CV/Job-Matching-Logik (Embeddings via `sentence-transformers`)
+- [x] CV/Job-Matching per Embeddings (`sentence-transformers`, mehrsprachig) + pgvector-Cosine-Similarity
+- [ ] Skill-Gap-Analyse (fehlende Skills zwischen CV und Job auflisten)
 - [ ] Docker Compose (FastAPI + PostgreSQL), GitHub Actions CI
 - [ ] Redis-Caching für Embeddings

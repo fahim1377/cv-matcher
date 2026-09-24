@@ -8,7 +8,11 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from cv_matcher.core.config import settings
 from cv_matcher.core.database import Base
-from cv_matcher.models.user import User  # noqa: F401 (registers the model on Base.metadata)
+
+# noqa: F401 (importing these registers the models on Base.metadata for autogenerate)
+from cv_matcher.models.cv import CV  # noqa: F401
+from cv_matcher.models.job import Job  # noqa: F401
+from cv_matcher.models.user import User  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
