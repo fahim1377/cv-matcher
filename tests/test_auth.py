@@ -23,9 +23,7 @@ def test_register_rejects_duplicate_email(client: TestClient) -> None:
 
 
 def test_login_returns_token_for_correct_credentials(client: TestClient) -> None:
-    client.post(
-        "/auth/register", json={"email": "anna@example.com", "password": "supersecret123"}
-    )
+    client.post("/auth/register", json={"email": "anna@example.com", "password": "supersecret123"})
 
     response = client.post(
         "/auth/token",
@@ -39,9 +37,7 @@ def test_login_returns_token_for_correct_credentials(client: TestClient) -> None
 
 
 def test_login_rejects_wrong_password(client: TestClient) -> None:
-    client.post(
-        "/auth/register", json={"email": "anna@example.com", "password": "supersecret123"}
-    )
+    client.post("/auth/register", json={"email": "anna@example.com", "password": "supersecret123"})
 
     response = client.post(
         "/auth/token",

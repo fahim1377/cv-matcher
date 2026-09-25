@@ -35,9 +35,7 @@ def test_match_with_someone_elses_job_is_not_found(client: TestClient) -> None:
     headers_anna = _auth_headers(client, "anna@example.com")
     headers_bob = _auth_headers(client, "bob@example.com")
 
-    cv_id = client.post(
-        "/cv", json={"raw_text": "Annas CV"}, headers=headers_anna
-    ).json()["id"]
+    cv_id = client.post("/cv", json={"raw_text": "Annas CV"}, headers=headers_anna).json()["id"]
     job_id = client.post(
         "/jobs", json={"title": "Bobs Job", "raw_text": "Bobs Job Text"}, headers=headers_bob
     ).json()["id"]
@@ -54,5 +52,42 @@ def test_match_with_unknown_cv_is_not_found(client: TestClient) -> None:
     ).json()["id"]
 
     response = client.get(f"/matches/{uuid.uuid4()}/{job_id}", headers=headers)
+
+    assert response.status_code == 404
+
+
+def test_skill_gap_returns_missing_skills(client: TestClient) -> None:
+    headers = _auth_headers(client)
+    cv_id = client.post(
+        "/cv", json={"raw_text": "Erfahrener Python-Entwickler"}, headers=headers
+    ).json()["id"]
+    job_id = client.post(
+        "/jobs",
+        json={
+            "title": "KI-Engineer",
+            "raw_text": "Gesucht: Python-Entwickler mit Docker und Kubernetes",
+        },
+        headers=headers,
+    ).json()["id"]
+
+    response = client.get(f"/matches/{cv_id}/{job_id}/skills", headers=headers)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["cv_id"] == cv_id
+    assert body["job_id"] == job_id
+    assert set(body["missing_skills"]) == {"Docker", "Kubernetes"}
+
+
+def test_skill_gap_with_someone_elses_cv_is_not_found(client: TestClient) -> None:
+    headers_anna = _auth_headers(client, "anna@example.com")
+    headers_bob = _auth_headers(client, "bob@example.com")
+
+    cv_id = client.post("/cv", json={"raw_text": "Bobs CV"}, headers=headers_bob).json()["id"]
+    job_id = client.post(
+        "/jobs", json={"title": "Annas Job", "raw_text": "Text"}, headers=headers_anna
+    ).json()["id"]
+
+    response = client.get(f"/matches/{cv_id}/{job_id}/skills", headers=headers_anna)
 
     assert response.status_code == 404

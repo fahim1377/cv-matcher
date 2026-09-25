@@ -1,6 +1,6 @@
 # CV-Matcher
 
-FastAPI-Service, der einen Lebenslauf mit einer Stellenanzeige per Embedding vergleicht und einen Match-Score berechnet.
+FastAPI-Service, der einen Lebenslauf mit einer Stellenanzeige per Embedding vergleicht, einen Match-Score berechnet und fehlende Skills aufzeigt.
 
 ## Setup
 
@@ -47,6 +47,6 @@ uv run alembic upgrade head
 - [x] Fundament: Projektstruktur, Tooling (`uv`, `ruff`, `mypy`), Health-Check-Endpoint
 - [x] Auth (JWT), Dependency Injection, PostgreSQL + SQLAlchemy (async) + Alembic, vollständige Test-Coverage
 - [x] CV/Job-Matching per Embeddings (`sentence-transformers`, mehrsprachig) + pgvector-Cosine-Similarity
-- [ ] Skill-Gap-Analyse (fehlende Skills zwischen CV und Job auflisten)
+- [x] Skill-Gap-Analyse (fehlende Skills zwischen CV und Job, keyword-basiert)
 - [ ] Docker Compose (FastAPI + PostgreSQL), GitHub Actions CI
 - [ ] Redis-Caching für Embeddings

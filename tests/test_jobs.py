@@ -34,9 +34,7 @@ def test_list_my_jobs_returns_only_own_jobs(client: TestClient) -> None:
     headers_anna = _auth_headers(client, "anna@example.com")
     headers_bob = _auth_headers(client, "bob@example.com")
 
-    client.post(
-        "/jobs", json={"title": "Annas Job", "raw_text": "Text A"}, headers=headers_anna
-    )
+    client.post("/jobs", json={"title": "Annas Job", "raw_text": "Text A"}, headers=headers_anna)
     client.post("/jobs", json={"title": "Bobs Job", "raw_text": "Text B"}, headers=headers_bob)
 
     response = client.get("/jobs", headers=headers_anna)
